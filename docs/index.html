@@ -1,0 +1,891 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sonnental Hof — 2D Pixel-Art-Bauernhofspiel</title>
+    <meta
+      name="description"
+      content="Sonnental Hof ist ein gemütliches 2D-Pixel-Art-Bauernhofspiel von w33derlich für Windows, Linux und Browser — 100 % offline mit Dorfleben, Waldmine, Freizeitpark und eigenem MIDI-Soundtrack."
+    />
+    <meta property="og:title" content="Sonnental Hof — 2D Pixel-Art-Bauernhofspiel" />
+    <meta
+      property="og:description"
+      content="Level 1 bis 249, 4-Etagen-Bauernhaus, Dorf Sonnental, Kristallmine, Angelsystem und echte Pixel-Art-Atmosphäre — komplett offline spielbar."
+    />
+    <meta property="og:image" content="./assets/sonnental-hof-banner.jpg" />
+    <link rel="icon" type="image/png" href="./assets/icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f8faf8;
+        --surface: #ffffff;
+        --surface-muted: #f0f4f1;
+        --border: #dce4dd;
+        --text: #132018;
+        --text-muted: #4b5c50;
+        --accent: #15803d;
+        --accent-hover: #166534;
+        --accent-soft: #e9f5ec;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      h1, h2, h3, h4, .font-display {
+        font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      }
+
+      code, pre, .font-mono {
+        font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+      }
+
+      .tabular-nums {
+        font-variant-numeric: tabular-nums;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      /* Top Navigation: 3 clean zones */
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 30;
+        background: rgba(248, 250, 248, 0.92);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .topbar-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 32px;
+        height: 68px;
+      }
+
+      .brand {
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.15rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        color: var(--text);
+        text-decoration: none;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 28px;
+      }
+
+      .nav-links a {
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: 0.925rem;
+        font-weight: 500;
+        white-space: nowrap;
+        flex-shrink: 0;
+        transition: color 150ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .nav-links a:hover,
+      .nav-links a:focus-visible {
+        color: var(--text);
+        text-decoration: underline;
+        text-underline-offset: 6px;
+      }
+
+      .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 20px;
+        min-height: 42px;
+        background: var(--accent);
+        color: #ffffff;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.925rem;
+        font-weight: 600;
+        border-radius: 8px;
+        border: 1px solid transparent;
+        text-decoration: none;
+        cursor: pointer;
+        white-space: nowrap;
+        flex-shrink: 0;
+        transition: background-color 150ms cubic-bezier(0.16, 1, 0.3, 1), transform 150ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .btn-primary:hover {
+        background: var(--accent-hover);
+      }
+
+      .btn-primary:focus-visible,
+      .tab-btn:focus-visible,
+      .btn-secondary:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+
+      .btn-secondary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 20px;
+        min-height: 42px;
+        background: var(--surface);
+        color: var(--text);
+        font-size: 0.925rem;
+        font-weight: 600;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        text-decoration: none;
+        white-space: nowrap;
+        transition: background-color 150ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .btn-secondary:hover {
+        background: var(--surface-muted);
+      }
+
+      /* Hero */
+      .hero {
+        padding: 64px 0 48px;
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1fr 1.15fr;
+        gap: 48px;
+        align-items: stretch;
+      }
+
+      .hero-copy {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .meta-line {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin-bottom: 14px;
+      }
+
+      .hero-title {
+        margin: 0 0 18px;
+        font-size: clamp(2.25rem, 4vw, 3.35rem);
+        font-weight: 800;
+        line-height: 1.08;
+        letter-spacing: -0.025em;
+        text-wrap: balance;
+      }
+
+      .hero-desc {
+        margin: 0 0 28px;
+        font-size: 1.05rem;
+        color: var(--text-muted);
+        max-width: 58ch;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .hero-media {
+        position: relative;
+        border-radius: 14px;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        background: linear-gradient(135deg, #1b3624 0%, #2f5737 55%, #19291e 100%);
+        min-height: 300px;
+      }
+
+      .hero-media img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .hero-media-fallback {
+        display: none;
+        padding: 36px;
+        color: #f3f7f4;
+        height: 100%;
+        flex-direction: column;
+        justify-content: flex-end;
+      }
+
+      /* KPI Strip */
+      .kpi-strip {
+        margin-top: 40px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: var(--surface);
+        overflow: hidden;
+      }
+
+      .kpi-item {
+        padding: 20px 24px;
+        border-right: 1px solid var(--border);
+      }
+
+      .kpi-item:last-child {
+        border-right: none;
+      }
+
+      .kpi-value {
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.65rem;
+        font-weight: 700;
+        line-height: 1.2;
+      }
+
+      .kpi-label {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin-top: 4px;
+      }
+
+      /* Sections */
+      section {
+        padding: 64px 0;
+        border-top: 1px solid var(--border);
+      }
+
+      .section-head {
+        max-width: 680px;
+        margin-bottom: 32px;
+      }
+
+      .section-title {
+        margin: 0 0 10px;
+        font-size: clamp(1.6rem, 2.6vw, 2.15rem);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        text-wrap: balance;
+      }
+
+      .section-sub {
+        margin: 0;
+        color: var(--text-muted);
+        font-size: 1rem;
+      }
+
+      /* Asymmetric Bento */
+      .bento-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+      }
+
+      .bento-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 28px;
+      }
+
+      .bento-span-2 {
+        grid-column: span 2;
+      }
+
+      .card-index {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.8rem;
+        color: var(--accent);
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+
+      .bento-card h3 {
+        margin: 0 0 8px;
+        font-size: 1.2rem;
+        font-weight: 700;
+      }
+
+      .bento-card p {
+        margin: 0;
+        font-size: 0.95rem;
+        color: var(--text-muted);
+      }
+
+      /* Interactive Tabs */
+      .tabs-bar {
+        display: inline-flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        padding: 6px;
+        background: var(--surface-muted);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        margin-bottom: 24px;
+      }
+
+      .tab-btn {
+        padding: 9px 16px;
+        min-height: 40px;
+        border: none;
+        border-radius: 7px;
+        background: transparent;
+        color: var(--text-muted);
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: background-color 150ms ease, color 150ms ease;
+      }
+
+      .tab-btn[aria-selected='true'] {
+        background: var(--surface);
+        color: var(--text);
+        box-shadow: 0 1px 2px rgba(19, 32, 24, 0.08);
+      }
+
+      .tab-panel {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 32px;
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 32px;
+      }
+
+      .tab-panel ul {
+        margin: 0;
+        padding-left: 18px;
+        color: var(--text-muted);
+      }
+
+      .tab-panel li + li {
+        margin-top: 8px;
+      }
+
+      .tab-aside {
+        background: var(--surface-muted);
+        border-radius: 10px;
+        padding: 24px;
+      }
+
+      .tab-aside h4 {
+        margin: 0 0 8px;
+        font-size: 1rem;
+      }
+
+      .tab-aside p {
+        margin: 0;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+      }
+
+      /* Tech Stack Table */
+      .table-wrap {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+        font-size: 0.925rem;
+      }
+
+      th, td {
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--border);
+        vertical-align: top;
+      }
+
+      tr:last-child td {
+        border-bottom: none;
+      }
+
+      th {
+        background: var(--surface-muted);
+        font-family: 'Outfit', sans-serif;
+        font-weight: 600;
+        font-size: 0.85rem;
+        color: var(--text-muted);
+      }
+
+      /* Download & Build Grid */
+      .build-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+      }
+
+      .code-block {
+        margin: 16px 0 0;
+        padding: 16px;
+        background: #132018;
+        color: #e9f5ec;
+        border-radius: 8px;
+        font-size: 0.84rem;
+        line-height: 1.65;
+        overflow-x: auto;
+      }
+
+      footer {
+        border-top: 1px solid var(--border);
+        padding: 32px 0;
+        background: var(--surface);
+      }
+
+      .footer-inner {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        font-size: 0.875rem;
+        color: var(--text-muted);
+      }
+
+      .footer-links {
+        display: flex;
+        gap: 20px;
+      }
+
+      .footer-links a {
+        color: var(--text-muted);
+        text-decoration: none;
+      }
+
+      .footer-links a:hover {
+        color: var(--text);
+        text-decoration: underline;
+      }
+
+      @media (max-width: 960px) {
+        .hero-grid,
+        .tab-panel,
+        .build-grid {
+          grid-template-columns: 1fr;
+        }
+        .kpi-strip {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .kpi-item:nth-child(2n) {
+          border-right: none;
+        }
+        .kpi-item:nth-child(-n+2) {
+          border-bottom: 1px solid var(--border);
+        }
+        .bento-grid {
+          grid-template-columns: 1fr;
+        }
+        .bento-span-2 {
+          grid-column: span 1;
+        }
+        .nav-links {
+          display: none;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+        * {
+          transition: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container topbar-inner">
+        <a href="#top" class="brand">Sonnental Hof</a>
+        <nav class="nav-links" aria-label="Hauptnavigation">
+          <a href="#spielwelt">Spielwelt</a>
+          <a href="#systeme">Systeme</a>
+          <a href="#technik">Technik</a>
+          <a href="#download">Download</a>
+        </nav>
+        <a href="#download" class="btn-primary">Desktop &amp; Code</a>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero" style="border-top: none;">
+        <div class="container">
+          <div class="hero-grid">
+            <div class="hero-copy">
+              <div class="meta-line">
+                Beta 1.1 · Entwickler: w33derlich · Windows 10/11, Linux &amp; Browser
+              </div>
+              <h1 class="hero-title">
+                Ein gemütlicher 2D-Pixel-Bauernhof komplett ohne Online-Zwang.
+              </h1>
+              <p class="hero-desc">
+                Bewirtschafte im Sonnental eigene Felder, erweitere dein Bauernhaus auf bis zu vier
+                Etagen, beliefere das nördliche Dorf, schürfe in der Waldmine nach seltenen Erzen
+                und gestalte deinen Hof bis Level 249.
+              </p>
+              <div class="hero-actions">
+                <a href="#download" class="btn-primary">Builds &amp; Anleitung ansehen</a>
+                <a href="#technik" class="btn-secondary">Verwendete Bibliotheken</a>
+              </div>
+            </div>
+
+            <div class="hero-media">
+              <img
+                src="./assets/sonnental-hof-banner.jpg"
+                alt="Sonnental Hof 2D-Pixel-Art-Ansicht mit Bauernhaus, Feldern, Hofladen, Waldmine und Flussbrücke"
+                referrerpolicy="no-referrer"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+              />
+              <div class="hero-media-fallback">
+                <strong class="font-display" style="font-size: 1.35rem;">Sonnental Hof — Pixel-Art-Bauernhof</strong>
+                <span style="margin-top: 6px; opacity: 0.9;">
+                  4 Jahreszeiten · 249 Hof-Level · Dorf, Mine, Fluss &amp; Hofladen
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="kpi-strip tabular-nums">
+            <div class="kpi-item">
+              <div class="kpi-value">Level 1–249</div>
+              <div class="kpi-label">Inklusive anspruchsvollem Spätspiel ab Stufe 200</div>
+            </div>
+            <div class="kpi-item">
+              <div class="kpi-value">30 Häuser</div>
+              <div class="kpi-label">Nördliches Dorf mit Schwarzem Brett &amp; Besuchern</div>
+            </div>
+            <div class="kpi-item">
+              <div class="kpi-value">12 Stücke</div>
+              <div class="kpi-label">Ruhiger MIDI-Soundtrack über Web Audio API</div>
+            </div>
+            <div class="kpi-item">
+              <div class="kpi-value">100 % Lokal</div>
+              <div class="kpi-label">Auto-Save &amp; manueller .json-Spielstand-Export</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="spielwelt">
+        <div class="container">
+          <div class="section-head">
+            <h2 class="section-title">01. Eine lebendige Spielwelt rund um deinen Hof</h2>
+            <p class="section-sub">
+              Vom ersten Ackerbeet bis zum voll ausgebauten Landgut wächst das Tal in allen Himmelsrichtungen mit dir mit.
+            </p>
+          </div>
+
+          <div class="bento-grid">
+            <article class="bento-card bento-span-2">
+              <div class="card-index">01 · HOF, HAUS &amp; HOFLADEN</div>
+              <h3>Vom einfachen Beet zum vierstöckigen Landgut</h3>
+              <p>
+                Lege Felder und Wege an, züchte Pflanzen, Beeren, Obstbäume und Pilze, kümmere dich
+                um deine Hoftiere und verarbeite deine Ernte in der Manufaktur. Dein Bauernhaus
+                wächst über vier Etagen mit dir mit, während der eigene Hofladen bis zu 50 Dorfbewohner
+                pro Tag anzieht.
+              </p>
+            </article>
+
+            <article class="bento-card">
+              <div class="card-index">02 · JAHRESZEITEN &amp; WETTER</div>
+              <h3>Sonne, Regen, Schnee &amp; Stürme</h3>
+              <p>
+                Dynamische Tageszeiten mit Echtzeit-Schatten, Nachtlichtkegeln, Regenpfützen,
+                Kaminrauch und saisonalen Ereignissen bis hin zum Weihnachtsmann-Besuch und
+                Silvester-Feuerwerk im Winter.
+              </p>
+            </article>
+
+            <article class="bento-card">
+              <div class="card-index">03 · WALDMINE &amp; FLUSS</div>
+              <h3>Erze, Relikte &amp; Angeln</h3>
+              <p>
+                Schürfe am westlichen Talrand nach 6 Erzsorten und Kristallrelikten für Sprinkler
+                oder wirf ab Level 15 deine Angel an Brücke und Stegen aus.
+              </p>
+            </article>
+
+            <article class="bento-card bento-span-2">
+              <div class="card-index">04 · DORF, FREIZEITPARK &amp; ENDGAME</div>
+              <h3>Langzeitmotivation bis Hof-Level 249</h3>
+              <p>
+                Erfülle Lieferaufträge am Schwarzen Brett im Dorf, knüpfe Beziehungen im
+                Romantik-System ab Level 80, errichte später deinen eigenen Freizeitpark und stelle
+                dich ab Level 200 häufigeren Unwetter- und Schädlings-Herausforderungen.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="systeme">
+        <div class="container">
+          <div class="section-head">
+            <h2 class="section-title">02. Spielsysteme im Detail</h2>
+            <p class="section-sub">
+              Wähle einen Bereich, um die wichtigsten Mechaniken und Komfortfunktionen kennenzulernen.
+            </p>
+          </div>
+
+          <div class="tabs-bar" role="tablist" aria-label="Spielsysteme">
+            <button class="tab-btn" role="tab" aria-selected="true" data-tab="grafik">Grafik &amp; Audio</button>
+            <button class="tab-btn" role="tab" aria-selected="false" data-tab="endgame">Endgame 200–249</button>
+            <button class="tab-btn" role="tab" aria-selected="false" data-tab="komfort">Steuerung &amp; Saves</button>
+          </div>
+
+          <div id="tab-content" class="tab-panel" role="tabpanel"></div>
+        </div>
+      </section>
+
+      <section id="technik">
+        <div class="container">
+          <div class="section-head">
+            <h2 class="section-title">03. Verwendete Programme, Frameworks &amp; Bibliotheken</h2>
+            <p class="section-sub">
+              Transparente Übersicht aller Werkzeuge und Open-Source-Bibliotheken, mit denen Sonnental Hof entwickelt und paketiert wurde.
+            </p>
+          </div>
+
+          <div class="table-wrap">
+            <table class="tabular-nums">
+              <thead>
+                <tr>
+                  <th>Baustein</th>
+                  <th>Programm / Bibliothek</th>
+                  <th>Version</th>
+                  <th>Einsatz im Spiel</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>UI &amp; Spiel-Logik</td>
+                  <td><code>react</code> &amp; <code>react-dom</code></td>
+                  <td>19.0.1</td>
+                  <td>Menüs, HUD, Markt, Dorf-Dialoge, Optionen und Zustandssteuerung</td>
+                </tr>
+                <tr>
+                  <td>Programmiersprache</td>
+                  <td><code>typescript</code></td>
+                  <td>7.0.2</td>
+                  <td>Typsichere Spielregeln, Inventar-, Savegame- und Renderer-Logik</td>
+                </tr>
+                <tr>
+                  <td>Grafik-Engine</td>
+                  <td>HTML5 Canvas 2D API</td>
+                  <td>Webstandard</td>
+                  <td>Eigener Pixel-Art-Renderer mit Auto-Tiling, Schatten, Partikeln &amp; Lichtmaske</td>
+                </tr>
+                <tr>
+                  <td>Musik &amp; Effekte</td>
+                  <td>Web Audio API</td>
+                  <td>Webstandard</td>
+                  <td>Eingebauter polyphoner MIDI-Synthesizer mit 12 Stücken &amp; Soundeffekten</td>
+                </tr>
+                <tr>
+                  <td>Styling &amp; UI-Animation</td>
+                  <td><code>tailwindcss</code>, <code>lucide-react</code>, <code>motion</code></td>
+                  <td>4.3 / 0.546 / 12.23</td>
+                  <td>Layout, Werkzeug-Icons und sanfte UI-Übergänge</td>
+                </tr>
+                <tr>
+                  <td>Build &amp; Dev-Server</td>
+                  <td><code>vite</code>, <code>esbuild</code>, <code>tsx</code>, <code>express</code></td>
+                  <td>8.3 / 0.25 / 4.21 / 4.21</td>
+                  <td>Bündelung des Web-Builds sowie lokale Entwicklungs- und Download-API</td>
+                </tr>
+                <tr>
+                  <td>Desktop-Client</td>
+                  <td><code>electron</code> &amp; <code>electron-builder</code></td>
+                  <td>45.3.2 / 26.18.0</td>
+                  <td>Eigenständige Offline-Apps für Windows 10/11 (NSIS .exe) &amp; Linux (.tar.gz)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="download">
+        <div class="container">
+          <div class="section-head">
+            <h2 class="section-title">04. Spielen, Herunterladen &amp; Selbst Bauen</h2>
+            <p class="section-sub">
+              Nutze die fertigen Desktop-Pakete über die GitHub Releases oder starte den Quellcode direkt lokal.
+            </p>
+          </div>
+
+          <div class="build-grid">
+            <div class="bento-card">
+              <div class="card-index">DESKTOP-CLIENT (OFFLINE)</div>
+              <h3>Windows 10/11 &amp; Linux (CachyOS / Arch)</h3>
+              <p>
+                Die fertigen Desktop-Ausgaben laufen ohne Browser und ohne Internetverbindung und
+                speichern Spielstände direkt auf deinem Rechner. Lade aus den
+                <strong>GitHub Releases</strong> die passende Datei für dein System herunter:
+              </p>
+              <pre class="code-block"><code># Linux / CachyOS entpacken &amp; starten
+tar -xzf Sonnental-Hof-Beta-1.1-linux-x64.tar.gz
+cd Sonnental-Hof-Beta-1.1-linux-x64
+./sonnental-hof</code></pre>
+            </div>
+
+            <div class="bento-card">
+              <div class="card-index">QUELLCODE &amp; EIGENE BUILDS</div>
+              <h3>Lokal entwickeln oder Pakete selbst erzeugen</h3>
+              <p>
+                Benötigt lediglich Node.js und npm. Alle Skripte für Browser-Entwicklung, Web-Build
+                und Desktop-Installer sind direkt im Projekt hinterlegt:
+              </p>
+              <pre class="code-block"><code>npm install
+npm run dev          # Lokale Web-Vorschau auf Port 3000
+npm run desktop:linux  # Linux .tar.gz Paket bauen
+npm run desktop:win    # Windows Setup .exe bauen</code></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container footer-inner">
+        <div>Sonnental Hof · Beta 1.1 · Entwickelt von w33derlich</div>
+        <div class="footer-links">
+          <a href="#spielwelt">Spielwelt</a>
+          <a href="#systeme">Systeme</a>
+          <a href="#technik">Bibliotheken</a>
+          <a href="#download">Download</a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      (function () {
+        const DATA = {
+          grafik: {
+            title: 'Pixel-Art-Atmosphäre & eigener Audio-Synthesizer',
+            bullets: [
+              'Umschaltbare Grafik-Qualität unter Optionen → Anzeige zwischen Hoch (Empfohlen) und Standard (Klassisch).',
+              'Dynamische Sonnenschatten, ausgestanzte Nacht-Lichtkegel an Laternen und Fenstern sowie glitzernde Flussufer.',
+              'Auto-Tiling für Beete und Wege, animierte Regenpfützen, Kamin-/Ofenrauch und Aktionspartikel.',
+              '12 eigene MIDI-Stücke und Soundeffekte werden komplett ohne externe Audiodateien in Echtzeit synthetisiert.'
+            ],
+            asideTitle: 'Auflösung nach Wunsch',
+            asideText:
+              'Unterstützt wählbare Render-Presets (720p HD, 1080p Full HD und 2160p 4K UHD) sowie manuelles Kamera-Schwenken per rechter Maustaste.'
+          },
+          endgame: {
+            title: 'Anspruchsvolles Spätspiel von Level 200 bis 249',
+            bullets: [
+              'Ab Level 200 treten spürbar häufiger und intensivere Unwetter-, Dürre- und Schädlings-Ereignisse auf.',
+              'Gezielte Gegenmaßnahmen durch Hofwächter-Hund, Vogelscheuchen, Sprinkler-Netze und Winter-Gewächshaus.',
+              'Verzahnte Wirtschaftsketten aus Manufaktur, Hofladen-Besuchern, Dorf-Schwarzem Brett und Freizeitpark.'
+            ],
+            asideTitle: 'Kein künstliches Level-Ende',
+            asideText:
+              'Alle Mechaniken — vom Angeln über die Waldmine bis zum Freizeitpark — greifen nahtlos ineinander und belohnen strategische Hofplanung.'
+          },
+          komfort: {
+            title: 'Volle Kontrolle & 100 % lokale Savegames',
+            bullets: [
+              'Steuerung per WASD / Pfeiltasten sowie frei belegbare Tastatur-Shortcuts für alle Werkzeuge und Menüs.',
+              'Automatisches lokales Speichern alle 15 Minuten und beim Beenden der Anwendung.',
+              'Jederzeit Export und Import beliebiger Spielstände als kompakte .json-Datei — auch zwischen Web und Desktop übertragbar.'
+            ],
+            asideTitle: 'Saubere Desktop-Trennung',
+            asideText:
+              'Die fertigen Linux- und Windows-Clients blenden Web-Download-Hinweise automatisch aus und konzentrieren sich rein auf das lokale Spielerlebnis.'
+          }
+        };
+
+        const buttons = document.querySelectorAll('.tab-btn');
+        const panel = document.getElementById('tab-content');
+
+        function renderTab(key) {
+          const item = DATA[key];
+          if (!item || !panel) return;
+          panel.innerHTML = '';
+
+          const left = document.createElement('div');
+          const h3 = document.createElement('h3');
+          h3.className = 'font-display';
+          h3.style.margin = '0 0 14px';
+          h3.style.fontSize = '1.25rem';
+          h3.textContent = item.title;
+
+          const ul = document.createElement('ul');
+          item.bullets.forEach(function (text) {
+            const li = document.createElement('li');
+            li.textContent = text;
+            ul.appendChild(li);
+          });
+
+          left.appendChild(h3);
+          left.appendChild(ul);
+
+          const aside = document.createElement('div');
+          aside.className = 'tab-aside';
+          const h4 = document.createElement('h4');
+          h4.className = 'font-display';
+          h4.textContent = item.asideTitle;
+          const p = document.createElement('p');
+          p.textContent = item.asideText;
+          aside.appendChild(h4);
+          aside.appendChild(p);
+
+          panel.appendChild(left);
+          panel.appendChild(aside);
+        }
+
+        buttons.forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            buttons.forEach(function (b) {
+              b.setAttribute('aria-selected', 'false');
+            });
+            btn.setAttribute('aria-selected', 'true');
+            renderTab(btn.getAttribute('data-tab'));
+          });
+        });
+
+        renderTab('grafik');
+      })();
+    </script>
+  </body>
+</html>
