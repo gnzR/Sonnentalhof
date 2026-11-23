@@ -445,22 +445,11 @@
         color: var(--text-muted);
       }
 
-      /* Download & Build Grid */
-      .build-grid {
+      /* Download Grid */
+      .download-grid {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: repeat(2, 1fr);
         gap: 24px;
-      }
-
-      .code-block {
-        margin: 16px 0 0;
-        padding: 16px;
-        background: #132018;
-        color: #e9f5ec;
-        border-radius: 8px;
-        font-size: 0.84rem;
-        line-height: 1.65;
-        overflow-x: auto;
       }
 
       footer {
@@ -497,7 +486,7 @@
       @media (max-width: 960px) {
         .hero-grid,
         .tab-panel,
-        .build-grid {
+        .download-grid {
           grid-template-columns: 1fr;
         }
         .kpi-strip {
@@ -540,7 +529,7 @@
           <a href="#technik">Technik</a>
           <a href="#download">Download</a>
         </nav>
-        <a href="#download" class="btn-primary">Desktop &amp; Code</a>
+        <a href="#download" class="btn-primary">Desktop-Downloads</a>
       </div>
     </header>
 
@@ -561,7 +550,7 @@
                 und gestalte deinen Hof bis Level 249.
               </p>
               <div class="hero-actions">
-                <a href="#download" class="btn-primary">Builds &amp; Anleitung ansehen</a>
+                <a href="#download" class="btn-primary">Direkt herunterladen</a>
                 <a href="#technik" class="btn-secondary">Verwendete Bibliotheken</a>
               </div>
             </div>
@@ -746,38 +735,33 @@
       <section id="download">
         <div class="container">
           <div class="section-head">
-            <h2 class="section-title">04. Spielen, Herunterladen &amp; Selbst Bauen</h2>
+            <h2 class="section-title">04. Offline-Desktop-Versionen herunterladen</h2>
             <p class="section-sub">
-              Nutze die fertigen Desktop-Pakete über die GitHub Releases oder starte den Quellcode direkt lokal.
+              Lade dir die fertigen, eigenständigen Client-Pakete für Windows oder Linux herunter — 100 % offline und ohne Online-Zwang.
             </p>
           </div>
 
-          <div class="build-grid">
+          <div class="download-grid">
             <div class="bento-card">
-              <div class="card-index">DESKTOP-CLIENT (OFFLINE)</div>
-              <h3>Windows 10/11 &amp; Linux (CachyOS / Arch)</h3>
-              <p>
-                Die fertigen Desktop-Ausgaben laufen ohne Browser und ohne Internetverbindung und
-                speichern Spielstände direkt auf deinem Rechner. Lade aus den
-                <strong>GitHub Releases</strong> die passende Datei für dein System herunter:
+              <div class="card-index">WINDOWS 10 / 11 SETUP (.EXE)</div>
+              <h3>Windows Desktop-Client</h3>
+              <p style="margin-bottom: 20px;">
+                Komfortabler Installations-Assistent für Windows 10 und 11 (installiert pro Benutzer ohne Admin-Zwang inklusive Startmenü-Verknüpfung).
               </p>
-              <pre class="code-block"><code># Linux / CachyOS entpacken &amp; starten
-tar -xzf Sonnental-Hof-Beta-1.1-linux-x64.tar.gz
-cd Sonnental-Hof-Beta-1.1-linux-x64
-./sonnental-hof</code></pre>
+              <a href="https://github.com/gnzR/Sonnentalhof/releases/latest/download/Sonnental-Hof-Setup-Beta-1.1-win-x64.exe" class="btn-primary" style="width: 100%;">
+                Windows Setup (.exe) herunterladen
+              </a>
             </div>
 
             <div class="bento-card">
-              <div class="card-index">QUELLCODE &amp; EIGENE BUILDS</div>
-              <h3>Lokal entwickeln oder Pakete selbst erzeugen</h3>
-              <p>
-                Benötigt lediglich Node.js und npm. Alle Skripte für Browser-Entwicklung, Web-Build
-                und Desktop-Installer sind direkt im Projekt hinterlegt:
+              <div class="card-index">LINUX / CACHYOS (.TAR.GZ)</div>
+              <h3>Linux Desktop-Client</h3>
+              <p style="margin-bottom: 20px;">
+                Eigenständiges Archiv für Arch Linux, CachyOS sowie alle gängigen Linux-Distributionen (einfach entpacken und direkt starten).
               </p>
-              <pre class="code-block"><code>npm install
-npm run dev          # Lokale Web-Vorschau auf Port 3000
-npm run desktop:linux  # Linux .tar.gz Paket bauen
-npm run desktop:win    # Windows Setup .exe bauen</code></pre>
+              <a href="https://github.com/gnzR/Sonnentalhof/releases/latest/download/Sonnental-Hof-Beta-1.1-linux-x64.tar.gz" class="btn-primary" style="width: 100%;">
+                Linux Archiv (.tar.gz) herunterladen
+              </a>
             </div>
           </div>
         </div>

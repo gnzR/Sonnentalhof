@@ -8,6 +8,16 @@
 
 ---
 
+## Downloads für Windows & Linux
+
+Lade dir hier direkt die fertigen, eigenständigen Desktop-Versionen herunter (100 % offline spielbar ohne Online-Zwang):
+
+- **[Windows 10/11 Setup (.exe herunterladen)](https://github.com/gnzR/Sonnentalhof/releases/latest/download/Sonnental-Hof-Setup-Beta-1.1-win-x64.exe)** — Installiert sauber pro Benutzer (ohne Admin-Zwang) mit Startmenü-Verknüpfung.
+- **[Linux / CachyOS (.tar.gz herunterladen)](https://github.com/gnzR/Sonnentalhof/releases/latest/download/Sonnental-Hof-Beta-1.1-linux-x64.tar.gz)** — Kompakter Archiv-Client für Arch Linux, CachyOS & Debian/Ubuntu.
+- **[SHA-256 Prüfsummen (.txt)](https://github.com/gnzR/Sonnentalhof/releases/latest/download/SHA256SUMS.txt)**
+
+---
+
 ## Spielbeschreibung
 
 In **Sonnental Hof** übernimmst du ein ruhiges Stück Land im Sonnental und baust es Schritt für Schritt zu einem blühenden Selbstversorger-Hof aus — ganz ohne Online-Zwang, Accounts oder Mikrotransaktionen.
@@ -73,34 +83,3 @@ Alle Shortcuts lassen sich im Spiel unter **Optionen → Tastatur-Shortcuts** fr
 ### Desktop-Client & Paketierung
 - **Electron 45** (`electron`) — Eigenständige Offline-Desktop-Laufzeitumgebung für Linux & Windows
 - **electron-builder 26** (`electron-builder`, `app-builder-lib`) — Paketierung als Linux-`.tar.gz`-Archiv (z. B. für CachyOS / Arch) sowie Windows-10/11-NSIS-Installer (`.exe`)
-
----
-
-## Projekt lokal starten & Desktop-Builds erstellen
-
-### Voraussetzungen
-- **Node.js** (empfohlen v20 oder neuer) & **npm**
-
-### Web-Vorschau im Entwicklungsmodus
-```bash
-npm install
-npm run dev
-```
-Die Anwendung startet lokal auf Port `3000` (`http://localhost:3000`).
-
-### Produktions-Build & Desktop-Pakete
-```bash
-# Nur Web-Produktionsbuild (dist/)
-npm run build
-
-# Linux (.tar.gz) Paket bauen
-npm run desktop:linux
-
-# Windows Setup (.exe) bauen
-npm run desktop:win
-
-# Beide Desktop-Pakete zusammen bauen
-npm run desktop:all
-```
-
-Weitere Hinweise zur Installation der fertigen `.tar.gz`- und `.exe`-Pakete stehen in [`DESKTOP_BUILD.md`](DESKTOP_BUILD.md). Eine kompakte Projektseite für **GitHub Pages** liegt unter [`docs/index.html`](docs/index.html).
